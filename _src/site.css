@@ -212,7 +212,7 @@ body.escura{background:var(--ve);color:var(--be)}
   .lead{margin-top:16px;font-size:16px}
   .abertura .ctas{margin-top:22px}
   .abertura__drone{justify-self:center;align-self:center;width:min(88vw,46svh)}
-  .drone{transform:scale(1.06)}
+  .drone{transform:scale(.96)}
   .ctas{flex-direction:column;align-items:stretch;width:100%;max-width:340px;margin-inline:auto}
   .secao,.faixa,.chamada{text-align:center}
   .sub,.chamada p{margin-inline:auto}
