@@ -3,3 +3,4 @@ tools
 build.py
 README.md
 .audit
+node_modules

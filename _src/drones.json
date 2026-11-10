@@ -1,0 +1,44 @@
+[
+ {
+  "slug": "agras-t10",
+  "nome": "DJI Agras T10",
+  "autor": "ZLEA",
+  "licenca": "CC BY-SA 4.0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:DJI_3WWDZ-10A_Agras_T10_(FA3XY4XTKM)_(4-9-2024).jpg"
+ },
+ {
+  "slug": "agras-t20p",
+  "nome": "DJI Agras T20P",
+  "autor": "ZLEA",
+  "licenca": "CC BY-SA 4.0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:DJI_3WWDZ-20A_Agras_T20P_(4-9-2024).jpg"
+ },
+ {
+  "slug": "agras-t30",
+  "nome": "DJI Agras T30",
+  "autor": "ZLEA",
+  "licenca": "CC BY-SA 4.0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:DJI_3WWDZ-30A_Agras_T30_(N340RZ,_cn_3U5BJ6P001008A)_(4-9-2024).jpg"
+ },
+ {
+  "slug": "agras-t50",
+  "nome": "DJI Agras T50",
+  "autor": "Blervis",
+  "licenca": "CC0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:DJI_Agras_T50_on_ground.jpg"
+ },
+ {
+  "slug": "agras-t50-voo",
+  "nome": "DJI Agras T50",
+  "autor": "Blervis",
+  "licenca": "CC0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:DJI_Agras_T50_in_flight.jpg"
+ },
+ {
+  "slug": "xag-p100",
+  "nome": "XAG P100",
+  "autor": "MB-one",
+  "licenca": "CC BY-SA 4.0",
+  "pagina": "https://commons.wikimedia.org/wiki/File:XAG_drone,_Agritechnica_2023,_Hanover_(P1160326).jpg"
+ }
+]
