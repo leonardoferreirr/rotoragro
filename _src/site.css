@@ -211,7 +211,8 @@ body.escura{background:var(--ve);color:var(--be)}
   .h1{font-size:clamp(30px,8.6vw,44px)}
   .lead{margin-top:16px;font-size:16px}
   .abertura .ctas{margin-top:22px}
-  .abertura__drone{justify-self:center;align-self:center;width:min(88vw,46svh)}
+  .palco__in{grid-template-rows:auto minmax(0,1fr);padding-bottom:14px}
+  .abertura__drone{justify-self:center;align-self:stretch;height:100%;width:auto;max-width:88vw;min-height:0}
   .drone{transform:scale(.96)}
   .ctas{flex-direction:column;align-items:stretch;width:100%;max-width:340px;margin-inline:auto}
   .secao,.faixa,.chamada{text-align:center}
@@ -250,6 +251,7 @@ body.escura{background:var(--ve);color:var(--be)}
   .rodape p{margin-inline:auto}
   .rodape__base{flex-direction:column;gap:18px}
 }
+@media (max-width:900px) and (max-height:740px){.abertura .btn--linha{display:none}.abertura .ctas{margin-top:18px}.palco__in{padding-top:calc(var(--topo) + 16px)}}
 @media (max-width:360px){.btn{white-space:normal;height:auto;min-height:54px;padding:12px 20px;text-align:center}}
 @media (prefers-reduced-motion:reduce){
   .abertura{height:auto}

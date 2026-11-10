@@ -16,10 +16,11 @@ import drone
 # Tudo que depende do cliente fica aqui. Enquanto INDEXAR for False, o site fica fora do Google.
 DOMINIO = "https://www.rotoragro.com.br"
 INDEXAR = False            # ligar quando entrarem cidade, WhatsApp e as confirmações abaixo
-WHATSAPP = "5500000000000" # [A PREENCHER] só números, com 55 e DDD
-TEL_VER = "(00) 00000-0000"
+WHATSAPP = ""             # [A PREENCHER] só números, com 55 e DDD; vazio, os botões levam a uma página que aponta para o Instagram
+TEL_VER = ""               # como o número aparece escrito, ex.: "(34) 99999-9999"
 INSTAGRAM = "https://www.instagram.com/rotoragro"
-CIDADE = ""                # [A PREENCHER] ex.: "Uberlândia, MG"; com cidade, os textos e o schema passam a citar a região
+CIDADE = ""                # opcional: cidade da oficina, ex.: "Uberlândia, MG"
+ABRANGENCIA = "todo o Brasil"   # o atendimento é nacional: o drone vem até a oficina
 GTM_ID = ""
 # [A CONFIRMAR] com o cliente: cada uma dessas afirmações aparece no site
 ATENDE_QUALQUER_REVENDA = True
@@ -99,12 +100,12 @@ def org_schema():
          "url": DOMINIO + "/", "logo": DOMINIO + "/assets/img/icone-180.png", "image": DOMINIO + "/assets/img/og-image.jpg",
          "description": DESC_ORG, "sameAs": [INSTAGRAM], "priceRange": "Sob orçamento",
          "knowsAbout": ["Manutenção de drones agrícolas", "Conserto de drone de pulverização", "Teste e conserto de bateria de drone", "Revisão de drone antes da safra", "DJI Agras", "XAG"]}
-    if WHATSAPP and not WHATSAPP.startswith("5500"):
+    if WHATSAPP:
         d["telephone"] = "+" + WHATSAPP
+    d["areaServed"] = {"@type": "Country", "name": "Brasil"}
     if CIDADE:
         cid, uf = [x.strip() for x in CIDADE.split(",")]
         d["address"] = {"@type": "PostalAddress", "addressLocality": cid, "addressRegion": uf, "addressCountry": "BR"}
-        d["areaServed"] = {"@type": "State", "name": uf}
     return d
 
 
@@ -150,12 +151,12 @@ def topo(rota):
 
 
 def rodape():
-    regiao = f"Oficina em {CIDADE}." if CIDADE else "Atendimento a produtores, prestadores de serviço de pulverização e cooperativas."
+    regiao = (f"Oficina em {CIDADE}, com atendimento em {ABRANGENCIA}." if CIDADE else f"Atendimento em {ABRANGENCIA}, para produtores, prestadores de serviço de pulverização e cooperativas.")
     return f'''<footer class="rodape"><div class="wrap">
 <div class="rodape__grade">
 <div><img class="rodape__logo" src="/assets/img/logo-horizontal-sobre-escuro.svg" width="240" height="25" alt="Rotor Agro" loading="lazy"><p>Manutenção de drones agrícolas e baterias. {regiao}</p></div>
 <div><p class="rodape__tit">Serviços</p><ul><li><a href="/manutencao-de-drones-agricolas">Manutenção de drones agrícolas</a></li><li><a href="/conserto-de-bateria-de-drone">Teste e conserto de bateria</a></li><li><a href="/#revisao">Revisão antes da safra</a></li><li><a href="/#perguntas">Perguntas frequentes</a></li></ul></div>
-<div><p class="rodape__tit">Contato</p><ul><li><a href="{zap_link("rodape")}">WhatsApp {TEL_VER}</a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener">Instagram @rotoragro</a></li></ul></div>
+<div><p class="rodape__tit">Contato</p><ul><li><a href="{zap_link("rodape")}">WhatsApp{" " + TEL_VER if TEL_VER else ""}</a></li><li><a href="{INSTAGRAM}" target="_blank" rel="noopener">Instagram @rotoragro</a></li></ul></div>
 </div>
 <div class="rodape__base"><span>© {date.today().year} Rotor Agro</span>{sequencia(8, "seq seq--rodape", False)}</div>
 </div></footer>
@@ -241,7 +242,7 @@ FAQ_HOME = [
     ("Quanto tempo demora?", "Depende do defeito e da peça. O prazo é informado junto com o orçamento, antes de você aprovar o serviço."),
     ("Vocês consertam bateria de drone agrícola?", "Sim. Testamos a saúde da bateria, o equilíbrio entre as células e o histórico de ciclos, e dizemos se o reparo compensa ou se é hora de trocar."),
     ("Quando é melhor fazer a revisão do drone?", "Na entressafra, antes de começarem as aplicações. Drone que voa muitas horas por dia também pede uma revisão no meio da safra."),
-    ("Como eu levo o drone até vocês?", "Chame no WhatsApp para combinar a entrega na oficina ou a retirada na sua região."),
+    ("Vocês atendem drones de outros estados?", "Sim. A Rotor Agro atende todo o Brasil. Chame no WhatsApp para combinar como o drone e as baterias chegam até a oficina e voltam para você."),
 ]
 
 
@@ -250,7 +251,7 @@ def abertura():
 <div class="wrap palco__in">
 <div class="abertura__txt">
 <h1 id="h1" class="h1">Manutenção de drones agrícolas e baterias</h1>
-<p class="lead">Drone de pulverização parado no meio da safra custa caro. A Rotor Agro encontra o defeito, passa o orçamento antes de mexer e devolve o drone pronto para voar.</p>
+<p class="lead">Drone de pulverização parado no meio da safra custa caro. A Rotor Agro atende todo o Brasil: encontra o defeito, passa o orçamento antes de mexer e devolve o drone pronto para voar.</p>
 <div class="ctas">{btn("Chamar no WhatsApp", zap_link("abertura"), "lima", "zap")}{btn("Ver os serviços", "#servicos", "linha")}</div>
 </div>
 <div class="abertura__drone">{drone.svg()}</div>
@@ -305,7 +306,7 @@ def home():
         "Drone parado é prejuízo todo dia", "Mande o modelo e o problema no WhatsApp. A gente responde com o próximo passo.", "final")
     lds = ld(site_ld()) + ld(faq_ld(FAQ_HOME)) + ld(servico_ld("Manutenção de drones agrícolas e baterias", "/", DESC_ORG))
     return pagina("Manutenção de drones agrícolas e baterias | Rotor Agro",
-                  "Conserto de drones agrícolas de pulverização e de baterias: diagnóstico, orçamento antes do serviço, teste de bateria e revisão antes da safra. Chame no WhatsApp.",
+                  "Conserto de drones agrícolas de pulverização e de baterias, com atendimento em todo o Brasil: diagnóstico, orçamento antes do serviço, teste de bateria e revisão antes da safra.",
                   corpo, "/", lds, classe="home")
 
 
@@ -331,18 +332,18 @@ DEFEITOS_DRONE = [
 ]
 FAQ_DRONE = [
     ("Vocês consertam drone que caiu?", "Sim. Depois de uma queda a gente avalia estrutura, braços, motores, placas e sensores e passa o orçamento antes de consertar."),
-    ("O drone precisa ir até a oficina?", "Para o diagnóstico completo, sim. Chame no WhatsApp para combinar a entrega ou a retirada na sua região."),
+    ("O drone precisa ir até a oficina?", "Para o diagnóstico completo, sim. Atendemos todo o Brasil: chame no WhatsApp para combinar como o drone chega até a oficina e volta para você."),
     FAQ_HOME[0], FAQ_HOME[2], FAQ_HOME[3],
 ]
 
 
 def pag_drone():
-    corpo = cabeca("Manutenção de drones agrícolas", f"Conserto de drones de pulverização DJI Agras e XAG{', ' + REVENDA if REVENDA else ''}. Diagnóstico primeiro, orçamento antes de mexer e teste antes de devolver.", "pagina-drone", "Manutenção de drones agrícolas")
+    corpo = cabeca("Manutenção de drones agrícolas", f"Conserto de drones de pulverização DJI Agras e XAG{', ' + REVENDA if REVENDA else ''}, com atendimento em todo o Brasil. Diagnóstico primeiro, orçamento antes de mexer e teste antes de devolver.", "pagina-drone", "Manutenção de drones agrícolas")
     corpo += f'''<section class="secao"><div class="wrap"><h2 class="tit">Os defeitos que mais chegam na oficina</h2>{lista_blocos(DEFEITOS_DRONE)}</div></section>'''
     passos = "".join(f'<li><span class="passo__n">0{i + 1}</span><div><h3>{t}</h3><p>{d}</p></div></li>' for i, (t, d) in enumerate(PASSOS))
     corpo += f'''<section class="secao secao--branca"><div class="wrap duas"><div><h2 class="tit">Como é o serviço</h2><p class="sub">O mesmo caminho para qualquer defeito, com o orçamento aprovado por você antes do conserto.</p></div><ol class="passos-lista">{passos}</ol></div></section>'''
     corpo += revisao() + perguntas_html(FAQ_DRONE) + chamada("Seu drone está parado?", "Mande o modelo e o que está acontecendo. Um vídeo do erro já ajuda no diagnóstico.", "pagina-drone-final")
-    desc = "Conserto de drones agrícolas de pulverização DJI Agras e XAG: motores, placas, GPS, radar, bicos e peças. Diagnóstico e orçamento antes do serviço."
+    desc = "Conserto de drones agrícolas de pulverização DJI Agras e XAG para todo o Brasil: motores, placas, GPS, radar, bicos e peças. Diagnóstico e orçamento antes do serviço."
     lds = ld(servico_ld("Manutenção de drones agrícolas", "/manutencao-de-drones-agricolas", desc)) + ld(faq_ld(FAQ_DRONE)) + ld(migalhas_ld([("Início", "/"), ("Manutenção de drones agrícolas", "/manutencao-de-drones-agricolas")]))
     return pagina("Manutenção de drones agrícolas DJI Agras e XAG | Rotor Agro", desc, corpo, "/manutencao-de-drones-agricolas", lds)
 
@@ -369,12 +370,20 @@ def pag_bateria():
 <div class="ctas">{btn("Testar minhas baterias", zap_link("pagina-bateria-sinais"), "lima", "zap")}</div></div>
 <div class="bat__img rv"><img src="/assets/img/etiqueta-bateria-600.webp" srcset="/assets/img/etiqueta-bateria-600.webp 600w, /assets/img/etiqueta-bateria-900.webp 900w" sizes="(max-width:900px) 90vw, 520px" width="600" height="213" alt="Etiqueta de bateria testada da Rotor Agro" loading="lazy"><p>A etiqueta fica na bateria, com o resultado do teste e o número da ordem de serviço.</p></div></div></section>'''
     corpo += perguntas_html(FAQ_BATERIA) + chamada("Baterias durando pouco?", "Mande quantas baterias são e o modelo do drone. A gente combina o teste.", "pagina-bateria-final")
-    desc = "Teste e conserto de bateria de drone agrícola DJI Agras e XAG: saúde, equilíbrio das células, ciclos, carregador e bateria com erro. Orçamento pelo WhatsApp."
+    desc = "Teste e conserto de bateria de drone agrícola DJI Agras e XAG, com atendimento em todo o Brasil: saúde, equilíbrio das células, ciclos, carregador e bateria com erro."
     lds = ld(servico_ld("Teste e conserto de bateria de drone agrícola", "/conserto-de-bateria-de-drone", desc)) + ld(faq_ld(FAQ_BATERIA)) + ld(migalhas_ld([("Início", "/"), ("Bateria de drone", "/conserto-de-bateria-de-drone")]))
     return pagina("Teste e conserto de bateria de drone agrícola | Rotor Agro", desc, corpo, "/conserto-de-bateria-de-drone", lds)
 
 
 def obrigado():
+    if not WHATSAPP:
+        corpo = f'''<section class="ponte"><div>
+<img src="/assets/img/logo-horizontal-sobre-escuro.svg" width="240" height="25" alt="Rotor Agro">
+<h1>O WhatsApp da Rotor Agro entra aqui em breve</h1>
+<p>Enquanto isso, fale com a gente pelo Instagram.</p>
+<div class="ctas">{btn("Abrir o Instagram", INSTAGRAM, "lima")}{btn("Voltar ao site", "/", "linha-clara")}</div>
+</div></section>'''
+        return pagina("Fale com a Rotor Agro", "Fale com a Rotor Agro.", corpo, "/obrigado", robots="noindex,nofollow", casca=False, classe="escura")
     corpo = f'''<section class="ponte"><div>
 <img src="/assets/img/logo-horizontal-sobre-escuro.svg" width="240" height="25" alt="Rotor Agro">
 <div class="ponte__o">{o_helice(80, "ponte__gira")}</div>
@@ -421,9 +430,8 @@ def guia_ia(paginas, rotas):
              "Serviços: motores, controladores, placas, GPS, radar, braços, hélices, sistema de pulverização (bicos, bomba, mangueiras, medidor de vazão), teste e avaliação de baterias e carregadores.",
              "Como funciona: contato pelo WhatsApp, diagnóstico, orçamento aprovado pelo cliente, conserto, teste e entrega com selo de revisão e número da ordem de serviço.",
              "Preço e prazo: informados no orçamento, depois do diagnóstico. O site não publica preços."]
-    if CIDADE:
-        fatos.append(f"Localização: {CIDADE}.")
-    contato = f"\n## Contato\n\n- WhatsApp: {TEL_VER}\n- Instagram: {INSTAGRAM}\n- Site: {DOMINIO}/\n"
+    fatos.append(f"Área de atendimento: {ABRANGENCIA}." + (f" Oficina em {CIDADE}." if CIDADE else ""))
+    contato = "\n## Contato\n\n" + (f"- WhatsApp: {TEL_VER}\n" if TEL_VER else "") + f"- Instagram: {INSTAGRAM}\n- Site: {DOMINIO}/\n"
     indice = [resumo, *[f"- {f}" for f in fatos], "\n## Páginas\n"] + [f"- [{dados(r)[0]}]({DOMINIO}{r}): {dados(r)[1]}" for r in rotas]
     indice += [f"\n## Detalhes\n\n- [Perguntas frequentes]({DOMINIO}/llms-full.txt)", contato]
     (RAIZ / "llms.txt").write_text("\n".join(indice))

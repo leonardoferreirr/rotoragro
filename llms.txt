@@ -6,12 +6,13 @@
 - Serviços: motores, controladores, placas, GPS, radar, braços, hélices, sistema de pulverização (bicos, bomba, mangueiras, medidor de vazão), teste e avaliação de baterias e carregadores.
 - Como funciona: contato pelo WhatsApp, diagnóstico, orçamento aprovado pelo cliente, conserto, teste e entrega com selo de revisão e número da ordem de serviço.
 - Preço e prazo: informados no orçamento, depois do diagnóstico. O site não publica preços.
+- Área de atendimento: todo o Brasil.
 
 ## Páginas
 
-- [Manutenção de drones agrícolas e baterias](https://www.rotoragro.com.br/): Conserto de drones agrícolas de pulverização e de baterias: diagnóstico, orçamento antes do serviço, teste de bateria e revisão antes da safra. Chame no WhatsApp.
-- [Manutenção de drones agrícolas DJI Agras e XAG](https://www.rotoragro.com.br/manutencao-de-drones-agricolas): Conserto de drones agrícolas de pulverização DJI Agras e XAG: motores, placas, GPS, radar, bicos e peças. Diagnóstico e orçamento antes do serviço.
-- [Teste e conserto de bateria de drone agrícola](https://www.rotoragro.com.br/conserto-de-bateria-de-drone): Teste e conserto de bateria de drone agrícola DJI Agras e XAG: saúde, equilíbrio das células, ciclos, carregador e bateria com erro. Orçamento pelo WhatsApp.
+- [Manutenção de drones agrícolas e baterias](https://www.rotoragro.com.br/): Conserto de drones agrícolas de pulverização e de baterias, com atendimento em todo o Brasil: diagnóstico, orçamento antes do serviço, teste de bateria e revisão antes da safra.
+- [Manutenção de drones agrícolas DJI Agras e XAG](https://www.rotoragro.com.br/manutencao-de-drones-agricolas): Conserto de drones agrícolas de pulverização DJI Agras e XAG para todo o Brasil: motores, placas, GPS, radar, bicos e peças. Diagnóstico e orçamento antes do serviço.
+- [Teste e conserto de bateria de drone agrícola](https://www.rotoragro.com.br/conserto-de-bateria-de-drone): Teste e conserto de bateria de drone agrícola DJI Agras e XAG, com atendimento em todo o Brasil: saúde, equilíbrio das células, ciclos, carregador e bateria com erro.
 
 ## Detalhes
 
@@ -19,6 +20,5 @@
 
 ## Contato
 
-- WhatsApp: (00) 00000-0000
 - Instagram: https://www.instagram.com/rotoragro
 - Site: https://www.rotoragro.com.br/
