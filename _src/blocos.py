@@ -1,7 +1,8 @@
 # Conteúdo e seções do site. Lido pelo build.py (exec no mesmo espaço de nomes).
 
-FONTES = [("Tit", "archivo-exp-620", 620), ("Leve", "archivo-exp-300", 300), ("Txt", "archivo-400", 400), ("Txt", "archivo-600", 600)]
+FONTES = [("Leve", "archivo-exp-300", 300), ("Txt", "archivo-300", 300), ("Txt", "archivo-500", 500)]
 DRONES = json.loads((RAIZ / "_src/drones.json").read_text())
+N_QUADROS = len(list((RAIZ / "assets/quadros/d").glob("*.webp")))
 
 
 def tit(forte, leve="", tag="h2", cls="tit"):
@@ -23,7 +24,7 @@ def perguntas_html(faq, forte="Perguntas", leve="frequentes"):
 def video_fundo(cls=""):
     """Vídeo da lavoura: a capa entra como imagem (é o que pinta primeiro) e o vídeo só carrega depois do load."""
     return f'''<div class="vf {cls}" data-video-desk="/assets/video/lavoura-1600.mp4" data-video-cel="/assets/video/lavoura-vertical.mp4">
-<picture><source media="(max-width:700px)" srcset="/assets/img/lavoura-capa-vertical.webp"><img class="vf__capa" src="/assets/img/lavoura-capa-1600.webp" width="1600" height="900" alt="" {"fetchpriority=high" if cls == "vf--abertura" else "loading=lazy decoding=async"}></picture>
+<picture><source media="(max-width:700px)" srcset="/assets/img/lavoura-inicio-vertical.webp"><img class="vf__capa" src="/assets/img/lavoura-inicio-1600.webp" width="1600" height="900" alt="" {"fetchpriority=high" if cls == "vf--abertura" else "loading=lazy decoding=async"}></picture>
 <video class="vf__video" muted playsinline loop preload="none" aria-hidden="true"></video></div>'''
 
 
@@ -67,7 +68,9 @@ FAQ_HOME = [
 def abertura():
     """O vídeo fica preso na tela e, no scroll, as frases aparecem por cima; no fim ele encolhe e vira um quadro."""
     return f'''<section class="abertura" aria-labelledby="h1"><div class="palco">
-<div class="palco__quadro">{video_fundo("vf--abertura")}<div class="palco__veu"></div></div>
+<div class="palco__quadro"><div class="vf vf--abertura" data-quadros-d="/assets/quadros/d/" data-quadros-m="/assets/quadros/m/" data-n="{N_QUADROS}">
+<picture><source media="(max-width:700px)" srcset="/assets/img/lavoura-inicio-vertical.webp"><img class="vf__capa" src="/assets/img/lavoura-inicio-1600.webp" width="1600" height="900" alt="" fetchpriority="high"></picture>
+<canvas class="vf__tela" aria-hidden="true"></canvas></div><div class="palco__veu"></div></div>
 <div class="wrap fase fase--1">
 {tit("Manutenção de drones agrícolas", "e baterias", "h1", "h1")}
 <p class="lead">Drone de pulverização parado no meio da safra custa caro. A Rotor Agro atende todo o Brasil: encontra o defeito, passa o orçamento antes de mexer e devolve o drone pronto para voar.</p>
@@ -89,11 +92,9 @@ def servicos():
 
 
 def como():
-    itens = "".join(f'''<li class="passo rv" style="--i:{i}"><div class="passo__o">{o_helice(-i * 45, "passo__svg")}</div><div><span class="passo__n">0{i + 1}</span><h3>{t}</h3><p>{d}</p></div></li>''' for i, (t, d) in enumerate(PASSOS))
-    return f'''<section class="secao secao--escura" id="como"><div class="wrap como">
-<div class="como__foto rv">{foto("oficina", "Bancada da oficina com um drone agrícola em conserto", "(max-width:900px) 92vw, 560px", (900, 1600), "largo", w=1600, h=1000)}</div>
-<div class="como__txt">{tit("Do chamado", "à entrega")}<ol class="passos">{itens}</ol></div>
-</div></section>'''
+    itens = "".join(f'''<li class="passo rv" style="--i:{i}"><div class="passo__o">{o_helice(-i * 45, "passo__svg")}</div><span class="passo__n">0{i + 1}</span><h3>{t}</h3><p>{d}</p></li>''' for i, (t, d) in enumerate(PASSOS))
+    return f'''<section class="secao paralaxe como" id="como"><div class="paralaxe__foto">{foto("oficina", "", "100vw", (900, 1600), "largo", w=1600, h=1000)}</div><div class="paralaxe__veu"></div>
+<div class="wrap como__in">{tit("Do chamado", "à entrega", cls="tit tit--centro")}<ol class="passos">{itens}</ol></div></section>'''
 
 
 def bateria3d(titulo=True):
@@ -112,9 +113,9 @@ def bateria3d(titulo=True):
 
 
 def revisao():
-    return f'''<section class="faixa" id="revisao"><div class="faixa__foto">{foto("bicos", "", "100vw", (900, 1600), "largo", w=1600, h=1000)}</div><div class="faixa__veu"></div>
-<div class="wrap faixa__in">{tit("Revisão", "antes da safra")}
-<p class="sub">Na entressafra o drone está parado e a revisão não atrapalha o trabalho. É a hora de trocar o que está gasto, calibrar a pulverização e testar as baterias.</p>
+    return f'''<section class="faixa paralaxe" id="revisao"><div class="paralaxe__foto">{foto("bicos", "", "100vw", (900, 1600), "largo", w=1600, h=1000)}</div><div class="faixa__veu"></div>
+<div class="wrap faixa__in">{tit("Revisão", "antes da safra", cls="tit tit--centro")}
+<p class="sub sub--centro">Na entressafra o drone está parado e a revisão não atrapalha o trabalho. É a hora de trocar o que está gasto, calibrar a pulverização e testar as baterias.</p>
 <div class="ctas">{btn("Agendar a revisão", zap_link("revisao"), "lima", "zap")}</div></div></section>'''
 
 
@@ -133,7 +134,7 @@ def home():
     lds = ld(site_ld()) + ld(faq_ld(FAQ_HOME)) + ld(servico_ld("Manutenção de drones agrícolas e baterias", "/", DESC_ORG))
     return pagina("Manutenção de drones agrícolas e baterias | Rotor Agro",
                   "Conserto de drones agrícolas de pulverização e de baterias, com atendimento em todo o Brasil: diagnóstico, orçamento antes do serviço, teste de bateria e revisão antes da safra.",
-                  corpo, "/", lds, classe="home", preload='<link rel="preload" as="image" href="/assets/img/lavoura-capa-1600.webp" media="(min-width:701px)" fetchpriority="high"><link rel="preload" as="image" href="/assets/img/lavoura-capa-vertical.webp" media="(max-width:700px)" fetchpriority="high">')
+                  corpo, "/", lds, classe="home", preload='<link rel="preload" as="image" href="/assets/img/lavoura-inicio-1600.webp" media="(min-width:701px)" fetchpriority="high"><link rel="preload" as="image" href="/assets/img/lavoura-inicio-vertical.webp" media="(max-width:700px)" fetchpriority="high">')
 
 
 # ------------------------------------------------------------------ páginas de serviço

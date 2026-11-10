@@ -194,9 +194,8 @@ def pagina(titulo, desc, corpo, rota="/", extra_ld="", robots=None, casca=True, 
 <meta property="og:title" content="{e(titulo)}"><meta property="og:description" content="{e(desc)}"><meta property="og:url" content="{DOMINIO}{rota}">
 <meta property="og:image" content="{DOMINIO}/assets/img/og-image.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.ico" sizes="48x48"><link rel="icon" type="image/svg+xml" href="/assets/img/icone.svg"><link rel="apple-touch-icon" href="/assets/img/icone-180.png">
-<link rel="preload" href="/assets/fonts/archivo-exp-620.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/archivo-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/archivo-exp-300.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/archivo-300.woff2" as="font" type="font/woff2" crossorigin>
 {preload}
 <script>document.documentElement.classList.add('js')</script>
 {gtm_head()}

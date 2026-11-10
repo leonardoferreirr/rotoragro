@@ -7,7 +7,7 @@ RAIZ = Path(__file__).resolve().parent.parent
 chrome = sorted((Path.home() / "Library/Caches/ms-playwright").glob("chromium_headless_shell-*/*/chrome-headless-shell"))[-1]
 s = (RAIZ / "assets/img/logo-simbolo-sobre-escuro.svg").read_text()
 vb, d = re.search(r'viewBox="([^"]+)"', s)[1], re.search(r' d="([^"]+)"', s)[1]
-H = f'''<style>@font-face{{font-family:T;src:url({(RAIZ/"assets/fonts/archivo-400.woff2").as_uri()})}}body{{margin:0}}.c{{width:1200px;height:630px;background:#0F3226;position:relative;overflow:hidden;font-family:T}}</style>
+H = f'''<style>@font-face{{font-family:T;src:url({(RAIZ/"assets/fonts/archivo-300.woff2").as_uri()})}}body{{margin:0}}.c{{width:1200px;height:630px;background:#0F3226;position:relative;overflow:hidden;font-family:T}}</style>
 <div class=c><svg viewBox="{vb}" style="position:absolute;width:760px;left:640px;top:20px;opacity:.36"><path fill="#1F7A4D" d="{d}"/></svg>
 <img src="{(RAIZ/"assets/img/logo-horizontal-sobre-escuro.svg").as_uri()}" style="position:absolute;left:90px;top:250px;width:620px">
 <div style="position:absolute;left:92px;top:340px;color:#F0EADB;font-size:30px;opacity:.85">Manutenção de drones agrícolas e baterias</div></div>'''

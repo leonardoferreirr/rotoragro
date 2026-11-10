@@ -30,6 +30,7 @@
     if (reduz) return;
     d.querySelectorAll('.vf').forEach(function (vf) {
       var v = vf.querySelector('video'), carregado = false;
+      if (!v) return;
       v.addEventListener('playing', function () { vf.classList.add('tocando'); });
       function toca(sim) {
         if (sim) {
@@ -43,6 +44,42 @@
   }
 
   // abertura em fases: título, primeira frase, segunda frase com os fatos, e o vídeo vira um quadro
+  // quadros do vídeo da abertura: baixam em passadas (primeiro espalhados, depois o resto) e o scroll escolhe qual desenhar
+  var quadros = null;
+  function ligaQuadros() {
+    var vf = ab && ab.querySelector('.vf--abertura'); if (!vf || reduz) return;
+    var tela = vf.querySelector('canvas'), cx = tela.getContext('2d'), n = +vf.getAttribute('data-n');
+    var base = vf.getAttribute(celular ? 'data-quadros-m' : 'data-quadros-d'), img = new Array(n), ok = new Array(n), alvo = 0, atual = -1, w = 0, h = 0;
+    function mede() {
+      var r = Math.min(window.devicePixelRatio || 1, celular ? 2 : 1.5), nw = Math.round(tela.clientWidth * r), nh = Math.round(tela.clientHeight * r);
+      if (nw !== w || nh !== h) { w = tela.width = nw; h = tela.height = nh; atual = -1; }
+    }
+    function desenha() {
+      var i = Math.round(alvo * (n - 1)), k = -1;
+      for (var dlt = 0; dlt < n && k < 0; dlt++) { if (ok[i - dlt]) k = i - dlt; else if (ok[i + dlt]) k = i + dlt; }
+      if (k < 0 || k === atual) return;
+      mede(); var im = img[k], e = Math.max(w / im.naturalWidth, h / im.naturalHeight), iw = im.naturalWidth * e, ih = im.naturalHeight * e;
+      cx.drawImage(im, (w - iw) / 2, (h - ih) * 0.6, iw, ih); atual = k;
+      if (!vf.classList.contains('pronto')) vf.classList.add('pronto');
+    }
+    var ordem = [], vistos = {};
+    [16, 8, 4, 2, 1].forEach(function (passo) { for (var i = 0; i < n; i += passo) if (!vistos[i]) { vistos[i] = 1; ordem.push(i); } });
+    if (!vistos[n - 1]) ordem.push(n - 1);
+    var pos = 0, ativos = 0;
+    function proximo() {
+      while (ativos < 6 && pos < ordem.length) {
+        (function (i) {
+          ativos++; var im = new Image(); im.decoding = 'async';
+          im.onload = function () { ok[i] = 1; img[i] = im; ativos--; requestAnimationFrame(desenha); proximo(); };
+          im.onerror = function () { ativos--; proximo(); };
+          im.src = base + ('00' + i).slice(-3) + '.webp';
+        })(ordem[pos++]);
+      }
+    }
+    addEventListener('resize', function () { w = 0; requestAnimationFrame(desenha); });
+    quadros = { vai: function (t) { alvo = t; desenha(); }, comeca: proximo };
+  }
+
   function ligaAbertura() {
     if (!ab || reduz) return;
     var pendente = false;
@@ -54,7 +91,8 @@
       s.setProperty('--f2', (est(0.17, 0.27, p) * (1 - est(0.42, 0.5, p))).toFixed(3));
       s.setProperty('--f3', (est(0.5, 0.62, p) * (1 - est(0.84, 0.9, p))).toFixed(3));
       s.setProperty('--m', est(0.86, 1, p).toFixed(3));
-      s.setProperty('--z', (1.06 - 0.06 * p).toFixed(4));
+      s.setProperty('--z', '1');
+      if (quadros) quadros.vai(est(0, 0.86, p));
     }
     addEventListener('scroll', function () { if (!pendente) { pendente = true; requestAnimationFrame(fases); } }, { passive: true });
     addEventListener('resize', fases); fases();
@@ -67,13 +105,8 @@
     var rot = [].slice.call(sec.querySelectorAll('.b3d__rot'));
     var api = null, visivel = false, rodando = false, ult = 0, pedido = false;
     function progresso() {
-      var r;
-      if (getComputedStyle(palco).position === 'sticky') {
-        r = sec.getBoundingClientRect();
-        return Math.min(1, Math.max(0, (innerHeight * 0.15 - r.top) / (r.height - innerHeight)));
-      }
-      r = palco.getBoundingClientRect();
-      return Math.min(1, Math.max(0, (innerHeight * 0.9 - r.top) / (innerHeight * 0.9 + r.height * 0.45)));
+      var r = (getComputedStyle(palco).position === 'sticky' ? sec : palco).getBoundingClientRect();
+      return Math.min(1, Math.max(0, (innerHeight * 0.9 - r.top) / (innerHeight * 1.15)));
     }
     function quadro(t) {
       var dt = ult ? Math.min(0.05, (t - ult) / 1000) : 0.016; ult = t;
@@ -99,7 +132,7 @@
     new IntersectionObserver(function (es) { visivel = es[0].isIntersecting; if (visivel) liga(); }).observe(palco);
   }
 
-  function comeca() { ligaVideos(); ligaBateria(); }
-  ligaAbertura();
+  function comeca() { ligaVideos(); ligaBateria(); if (quadros) quadros.comeca(); }
+  ligaQuadros(); ligaAbertura();
   if (d.readyState === 'complete') comeca(); else addEventListener('load', comeca);
 })();
