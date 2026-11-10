@@ -72,14 +72,13 @@ def abertura():
 <picture><source media="(max-width:700px)" srcset="/assets/img/lavoura-inicio-vertical.webp"><img class="vf__capa" src="/assets/img/lavoura-inicio-1600.webp" width="1600" height="900" alt="" fetchpriority="high"></picture>
 <canvas class="vf__tela" aria-hidden="true"></canvas></div><div class="palco__veu"></div></div>
 <div class="wrap fase fase--1">
-{tit("Manutenção de drones agrícolas", "e baterias", "h1", "h1")}
-<p class="lead">Drone de pulverização parado no meio da safra custa caro. A Rotor Agro atende todo o Brasil: encontra o defeito, passa o orçamento antes de mexer e devolve o drone pronto para voar.</p>
-<div class="ctas">{btn("Chamar no WhatsApp", zap_link("abertura"), "lima", "zap")}{btn("Ver os serviços", "#servicos", "linha")}</div>
+<h1 id="h1" class="h1"><span class="l1">Manutenção de drones agrícolas</span> <span class="l2 leve">e baterias</span></h1>
+<div class="fase__base"><p class="lead">Drone de pulverização parado no meio da safra custa caro. A Rotor Agro atende todo o Brasil: encontra o defeito, passa o orçamento antes de mexer e devolve o drone pronto para voar.</p>
+<div class="ctas">{btn("Chamar no WhatsApp", zap_link("abertura"), "lima", "zap")}{btn("Ver os serviços", "#servicos", "linha")}</div></div>
 </div>
-<div class="wrap fase fase--2" aria-hidden="true"><p class="frase">Drone parado na safra <span class="leve">é prejuízo todo dia.</span></p></div>
-<div class="wrap fase fase--3" aria-hidden="true"><p class="frase frase--menor">Antes de trocar qualquer peça, <span class="leve">a gente descobre o defeito.</span></p>
-<ul class="fatos"><li>Orçamento antes do conserto</li><li>Drone de qualquer revenda</li><li>Atendimento em todo o Brasil</li></ul></div>
-<div class="rolar" aria-hidden="true">{o_helice(80, "rolar__o")}<span>role a página</span></div>
+<div class="wrap fase fase--2" aria-hidden="true"><p class="frase"><span class="l1">Drone parado na safra</span> <span class="l2 leve">é prejuízo todo dia.</span></p></div>
+<div class="wrap fase fase--3" aria-hidden="true"><p class="frase"><span class="l1">Antes de trocar qualquer peça,</span> <span class="l2 leve">a gente descobre o defeito.</span></p>
+<ul class="fatos fase__base"><li>Orçamento antes do conserto</li><li>Drone de qualquer revenda</li><li>Atendimento em todo o Brasil</li></ul></div>
 </div></section>'''
 
 

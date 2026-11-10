@@ -49,17 +49,24 @@
   function ligaQuadros() {
     var vf = ab && ab.querySelector('.vf--abertura'); if (!vf || reduz) return;
     var tela = vf.querySelector('canvas'), cx = tela.getContext('2d'), n = +vf.getAttribute('data-n');
-    var base = vf.getAttribute(celular ? 'data-quadros-m' : 'data-quadros-d'), img = new Array(n), ok = new Array(n), alvo = 0, atual = -1, w = 0, h = 0;
+    var base = vf.getAttribute(celular ? 'data-quadros-m' : 'data-quadros-d'), img = new Array(n), ok = new Array(n), alvo = 0, atual = '', w = 0, h = 0;
     function mede() {
       var r = Math.min(window.devicePixelRatio || 1, celular ? 2 : 1.5), nw = Math.round(tela.clientWidth * r), nh = Math.round(tela.clientHeight * r);
-      if (nw !== w || nh !== h) { w = tela.width = nw; h = tela.height = nh; atual = -1; }
+      if (nw !== w || nh !== h) { w = tela.width = nw; h = tela.height = nh; atual = ''; }
     }
+    function perto(i) { for (var dlt = 0; dlt < n; dlt++) { if (ok[i - dlt]) return i - dlt; if (ok[i + dlt]) return i + dlt; } return -1; }
+    function pinta(im, alfa) {
+      var e = Math.max(w / im.naturalWidth, h / im.naturalHeight), iw = im.naturalWidth * e, ih = im.naturalHeight * e;
+      cx.globalAlpha = alfa; cx.drawImage(im, (w - iw) / 2, (h - ih) * 0.6, iw, ih);
+    }
+    // mistura o quadro de agora com o seguinte na proporção exata do scroll: sem degrau entre um quadro e outro
     function desenha() {
-      var i = Math.round(alvo * (n - 1)), k = -1;
-      for (var dlt = 0; dlt < n && k < 0; dlt++) { if (ok[i - dlt]) k = i - dlt; else if (ok[i + dlt]) k = i + dlt; }
-      if (k < 0 || k === atual) return;
-      mede(); var im = img[k], e = Math.max(w / im.naturalWidth, h / im.naturalHeight), iw = im.naturalWidth * e, ih = im.naturalHeight * e;
-      cx.drawImage(im, (w - iw) / 2, (h - ih) * 0.6, iw, ih); atual = k;
+      var f = alvo * (n - 1), a = Math.floor(f), b = Math.min(n - 1, a + 1), t = f - a;
+      if (!ok[a] || !ok[b]) { a = b = perto(Math.round(f)); t = 0; }
+      if (a < 0) return;
+      var chave = a + ':' + b + ':' + t.toFixed(3);
+      if (chave === atual) return;
+      mede(); pinta(img[a], 1); if (b !== a && t > 0.01) pinta(img[b], t); cx.globalAlpha = 1; atual = chave;
       if (!vf.classList.contains('pronto')) vf.classList.add('pronto');
     }
     var ordem = [], vistos = {};
@@ -70,32 +77,43 @@
       while (ativos < 6 && pos < ordem.length) {
         (function (i) {
           ativos++; var im = new Image(); im.decoding = 'async';
-          im.onload = function () { ok[i] = 1; img[i] = im; ativos--; requestAnimationFrame(desenha); proximo(); };
+          im.onload = function () { ok[i] = 1; img[i] = im; ativos--; atual = ''; requestAnimationFrame(desenha); proximo(); };
           im.onerror = function () { ativos--; proximo(); };
           im.src = base + ('00' + i).slice(-3) + '.webp';
         })(ordem[pos++]);
       }
     }
-    addEventListener('resize', function () { w = 0; requestAnimationFrame(desenha); });
+    addEventListener('resize', function () { w = 0; atual = ''; requestAnimationFrame(desenha); });
     quadros = { vai: function (t) { alvo = t; desenha(); }, comeca: proximo };
   }
 
   function ligaAbertura() {
     if (!ab || reduz) return;
-    var pendente = false;
-    function fases() {
-      pendente = false;
-      var total = ab.offsetHeight - innerHeight, p = total > 0 ? Math.min(1, Math.max(0, -ab.getBoundingClientRect().top / total)) : 0;
+    var alvoP = 0, p = -1, rodando = false, ult = 0;
+    function lePosicao() {
+      var total = ab.offsetHeight - innerHeight;
+      alvoP = total > 0 ? Math.min(1, Math.max(0, -ab.getBoundingClientRect().top / total)) : 0;
+    }
+    function aplica() {
       var s = ab.style;
-      s.setProperty('--s1', est(0.02, 0.16, p).toFixed(3));
-      s.setProperty('--f2', (est(0.17, 0.27, p) * (1 - est(0.42, 0.5, p))).toFixed(3));
-      s.setProperty('--f3', (est(0.5, 0.62, p) * (1 - est(0.84, 0.9, p))).toFixed(3));
-      s.setProperty('--m', est(0.86, 1, p).toFixed(3));
-      s.setProperty('--z', '1');
+      s.setProperty('--s1', est(0.02, 0.15, p).toFixed(4));
+      s.setProperty('--f2', (est(0.17, 0.27, p) * (1 - est(0.42, 0.5, p))).toFixed(4));
+      s.setProperty('--f3', (est(0.5, 0.62, p) * (1 - est(0.84, 0.9, p))).toFixed(4));
+      s.setProperty('--m', est(0.86, 1, p).toFixed(4));
       if (quadros) quadros.vai(est(0, 0.86, p));
     }
-    addEventListener('scroll', function () { if (!pendente) { pendente = true; requestAnimationFrame(fases); } }, { passive: true });
-    addEventListener('resize', fases); fases();
+    function quadro(t) {
+      var dt = ult ? Math.min(0.05, (t - ult) / 1000) : 0.016; ult = t;
+      if (p < 0) p = alvoP;
+      p += (alvoP - p) * (1 - Math.exp(-dt * 7.5));
+      if (Math.abs(alvoP - p) < 0.0004) p = alvoP;
+      aplica();
+      if (p !== alvoP) requestAnimationFrame(quadro); else { rodando = false; ult = 0; }
+    }
+    function anda() { lePosicao(); if (!rodando) { rodando = true; requestAnimationFrame(quadro); } }
+    addEventListener('scroll', anda, { passive: true });
+    addEventListener('resize', anda);
+    lePosicao(); p = alvoP; aplica();
   }
 
   // bateria 3D: o módulo (three.js) só baixa quando a seção chega perto
